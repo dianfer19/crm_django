@@ -1,6 +1,9 @@
 import uuid
 
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 from django.db import models
+from django.template.loader import get_template
 
 
 # Create your models here.
@@ -10,6 +13,12 @@ class Cargos(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            super(Cargos, self).save()
+        else:
+            super(Cargos, self).save()
 
     class Meta:
         verbose_name = 'Cargo'
@@ -53,6 +62,33 @@ class Clientes(models.Model):
     mail = models.EmailField()
     direccion = models.CharField(max_length=50)
     estado = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            super(Clientes, self).save()
+            mail = self.mail
+            print("Enviar Mail")
+            copia = {}
+            copia = 'dbajana@codeec.com.ec'
+            context = {'usuario': self.razon_social}
+            template = get_template('mail/notification.html')
+            asunto = "Notificaciones CRM"
+            content = template.render(context)
+            from_email = settings.EMAIL_HOST_USER
+            print(from_email)
+            to_email = {mail}
+            to_cc = {copia}
+            email = EmailMultiAlternatives(
+                asunto,
+                '',
+                from_email,
+                to_email,
+                cc=to_cc,
+            )
+            email.attach_alternative(content, 'text/html')
+            email.send()
+        else:
+            super(Clientes, self).save()
 
     def __str__(self):
         return self.razon_social

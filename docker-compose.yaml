@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  postgres:
+    container_name: db_postgres
+    image: postgres:16.1
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PW}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+        - PGADMIN_DEFAULT_EMAIL=${PGADMIN_MAIL}
+        - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
+    ports:
+        - "5050:80"
