@@ -67,10 +67,18 @@ WSGI_APPLICATION = 'crm_django.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('POSTGRES_DB'),
+        'OPTIONS': {
+            'options': '-c search_path=django,' + env('POSTGRES_SCHEMA'),
+        },
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PW'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env('POSTGRES_PORT_HOST'),
     }
 }
 
@@ -103,10 +111,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

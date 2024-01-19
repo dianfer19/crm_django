@@ -3,18 +3,55 @@ services:
   postgres:
     container_name: db_postgres
     image: postgres:16.1
+    volumes:
+      - ./docker_base/data/:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PW}
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT_HOST}:5432"
 
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4:latest
+    volumes:
+      - ./configPgadmin:/var/lib/pgadmin
     environment:
-        - PGADMIN_DEFAULT_EMAIL=${PGADMIN_MAIL}
-        - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_MAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
     ports:
-        - "5050:80"
+      - "5050:80"
+
+  backend_django:
+    container_name: django_crm
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TAG: 1.0
+
+    image: django_crm:1.0
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor_crm
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    ports:
+      - "8090:8080"
+    restart: "no"
