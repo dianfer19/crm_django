@@ -28,6 +28,7 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 THIRD_APPS = [
+    "django_apscheduler",
 ]
 PROJECT_APPS = [
     'prueba',
