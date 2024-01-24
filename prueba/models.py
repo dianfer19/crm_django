@@ -218,3 +218,24 @@ class DetalleFlujoCrm(models.Model):
         verbose_name = 'Detalle de Flujo'
         verbose_name_plural = 'Detalles de Flujo'
         db_table = 'crm_detalle_flujo'
+
+
+class BandejaElectronica(models.Model):
+    estados = [
+        ('A', 'Enviado'),
+        ('E', 'Error'),
+        ('P', 'Pendiente'), ]
+    asunto = models.CharField(max_length=100, blank=False, null=False)
+    de = models.CharField(max_length=100, blank=False, null=False)
+    para = models.CharField(max_length=100, blank=False, null=False)
+    cuerpo = models.CharField(max_length=100, blank=False, null=False)
+    estado = models.BooleanField(default=True)
+    estado_notificacion = models.CharField(max_length=1, choices=estados)
+
+    def __str__(self):
+        return self.asunto
+
+    class Meta:
+        verbose_name = 'Bandeja Electrónica'
+        verbose_name_plural = 'Bandeja Electrónica'
+        db_table = 'crm_bandeja electronica'

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from prueba.models import Empleado, Cargos, Clientes, Etapas, TipoActividad, PlanActividad, DetallePlanActividad, \
-    Oportunidades, DetalleFlujoCrm, FlujoCrm
+    Oportunidades, DetalleFlujoCrm, FlujoCrm, BandejaElectronica
 
 
 # Register your models here.
@@ -24,6 +24,13 @@ class EtapaAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'estado']
     search_fields = ['nombre', 'estado', ]
     list_filter = ['estado', ]
+
+
+@admin.register(BandejaElectronica)
+class BandejaElectronicaAdmin(admin.ModelAdmin):
+    list_display = ['asunto', 'para','cuerpo','estado_notificacion']
+    search_fields = ['asunto', 'para', ]
+    list_filter = ['estado_notificacion', ]
 
 
 @admin.register(Clientes)
